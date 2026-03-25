@@ -244,11 +244,15 @@
       <!-- Avatar / visual -->
       <div class="observe flex justify-center">
         <div class="relative w-64 h-64 sm:w-80 sm:h-80">
-          <!-- Outer ring -->
-          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-accent p-1">
-            <div class="w-full h-full rounded-full bg-dark-card flex items-center justify-center">
-              <!-- Initials -->
-              <span class="text-6xl sm:text-7xl font-black gradient-text select-none">AP</span>
+          <!-- Outer gradient ring -->
+          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-accent p-[3px]">
+            <div class="w-full h-full rounded-full overflow-hidden bg-dark-card">
+              <!-- Profile photo -->
+              <img
+                src="assets/profile.jpg"
+                alt="Abdulwahid Palanggalan"
+                class="w-full h-full object-cover object-top"
+              />
             </div>
           </div>
           <!-- Floating badges -->
