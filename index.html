@@ -839,10 +839,30 @@
      JAVASCRIPT
 ================================================ -->
 <script>
-  // ---- Dark / Light mode toggle ----
-  const html = document.documentElement;
-  const themeBtn = document.getElementById('theme-toggle');
+  // ---- All element references first ----
+  const html        = document.documentElement;
+  const themeBtn    = document.getElementById('theme-toggle');
+  const navbar      = document.getElementById('navbar');
+  const menuBtn     = document.getElementById('menu-btn');
+  const mobileMenu  = document.getElementById('mobile-menu');
+  const menuIconOpen  = document.getElementById('menu-icon-open');
+  const menuIconClose = document.getElementById('menu-icon-close');
 
+  // ---- Navbar scroll effect ----
+  function updateNavbar() {
+    const isLight = html.classList.contains('light');
+    if (window.scrollY > 20) {
+      navbar.style.background    = isLight ? 'rgba(248,250,252,0.95)' : 'rgba(15,23,42,0.95)';
+      navbar.style.backdropFilter = 'blur(16px)';
+      navbar.style.borderBottom  = isLight ? '1px solid #e2e8f0' : '1px solid #334155';
+    } else {
+      navbar.style.background    = 'transparent';
+      navbar.style.backdropFilter = 'none';
+      navbar.style.borderBottom  = 'none';
+    }
+  }
+
+  // ---- Dark / Light mode toggle ----
   function applyTheme(mode) {
     if (mode === 'light') {
       html.classList.add('light');
@@ -853,40 +873,16 @@
     updateNavbar();
   }
 
-  // Restore saved preference (default: dark)
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  applyTheme(savedTheme);
+  // Restore saved preference on load (default: dark)
+  applyTheme(localStorage.getItem('theme') || 'dark');
 
   themeBtn.addEventListener('click', () => {
-    const current = html.classList.contains('light') ? 'light' : 'dark';
-    applyTheme(current === 'light' ? 'dark' : 'light');
+    applyTheme(html.classList.contains('light') ? 'dark' : 'light');
   });
 
-  // ---- Navbar scroll effect ----
-  const navbar = document.getElementById('navbar');
-
-  function updateNavbar() {
-    const isLight = html.classList.contains('light');
-    if (window.scrollY > 20) {
-      navbar.style.background = isLight ? 'rgba(248,250,252,0.95)' : 'rgba(15,23,42,0.95)';
-      navbar.style.backdropFilter = 'blur(16px)';
-      navbar.style.borderBottom = isLight ? '1px solid #e2e8f0' : '1px solid #334155';
-    } else {
-      navbar.style.background = 'transparent';
-      navbar.style.backdropFilter = 'none';
-      navbar.style.borderBottom = 'none';
-    }
-  }
-
   window.addEventListener('scroll', updateNavbar);
-  updateNavbar();
 
   // ---- Mobile menu toggle ----
-  const menuBtn = document.getElementById('menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const menuIconOpen  = document.getElementById('menu-icon-open');
-  const menuIconClose = document.getElementById('menu-icon-close');
-
   menuBtn.addEventListener('click', () => {
     const isOpen = mobileMenu.classList.contains('open');
     if (isOpen) {
@@ -902,7 +898,6 @@
     }
   });
 
-  // Close mobile menu on link click
   document.querySelectorAll('.mobile-link').forEach(link => {
     link.addEventListener('click', () => {
       mobileMenu.classList.remove('open');
