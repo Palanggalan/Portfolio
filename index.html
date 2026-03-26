@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
@@ -33,11 +34,42 @@
     }
   </script>
   <style>
-    body { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+    /* ── CSS Color Tokens ── */
+    :root {
+      --bg:          #0f172a;
+      --bg-card:     #1e293b;
+      --bg-input:    #0f172a;
+      --border:      #334155;
+      --text:        #e2e8f0;
+      --text-muted:  #94a3b8;
+      --text-faint:  #64748b;
+      --scrollbar-track: #0f172a;
+      --hero-bg:     #0f172a;
+      --hero-grid:   rgba(99,102,241,0.05);
+    }
+    .light {
+      --bg:          #f8fafc;
+      --bg-card:     #ffffff;
+      --bg-input:    #f1f5f9;
+      --border:      #e2e8f0;
+      --text:        #0f172a;
+      --text-muted:  #475569;
+      --text-faint:  #94a3b8;
+      --scrollbar-track: #f1f5f9;
+      --hero-bg:     #f8fafc;
+      --hero-grid:   rgba(99,102,241,0.06);
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
 
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
     ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 3px; }
 
     /* Gradient text */
@@ -64,39 +96,45 @@
     }
     .nav-link:hover::after { width: 100%; }
 
+    /* Nav link text colors */
+    .nav-link, .nav-link-mobile { color: var(--text-muted); transition: color 0.2s; }
+    .nav-link:hover, .nav-link-mobile:hover { color: var(--text); }
+
     /* Observe animations */
     .observe { opacity: 0; }
     .observe.visible { animation: fadeInUp 0.7s ease forwards; }
 
     /* Hero grid pattern */
     .hero-bg {
-      background-color: #0f172a;
+      background-color: var(--hero-bg);
       background-image:
         radial-gradient(ellipse 80% 60% at 50% -10%, #6366f133 0%, transparent 70%),
-        linear-gradient(rgba(99,102,241,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(99,102,241,0.05) 1px, transparent 1px);
+        linear-gradient(var(--hero-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--hero-grid) 1px, transparent 1px);
       background-size: 100% 100%, 60px 60px, 60px 60px;
     }
 
     /* Section divider */
     .section-divider { height: 1px; background: linear-gradient(90deg, transparent, #6366f155, transparent); }
 
-    /* Skill bar */
+    /* Skill tag */
     .skill-tag {
-      background: linear-gradient(135deg, #1e293b, #0f172a);
+      background: var(--bg-card);
       border: 1px solid #6366f133;
+      color: var(--text-muted);
       transition: all 0.3s ease;
     }
     .skill-tag:hover {
       border-color: #6366f1;
-      background: linear-gradient(135deg, #6366f122, #1e293b);
+      background: linear-gradient(135deg, #6366f122, var(--bg-card));
       transform: translateY(-2px);
+      color: var(--text);
     }
 
     /* Project card */
     .project-card {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid #334155;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
       transition: all 0.35s ease;
     }
     .project-card:hover {
@@ -105,7 +143,21 @@
       box-shadow: 0 20px 60px #6366f133;
     }
 
-    /* Input focus */
+    /* Cards using bg-dark-card */
+    .theme-card {
+      background: var(--bg-card);
+      border-color: var(--border);
+      transition: background 0.35s ease, border-color 0.35s ease;
+    }
+
+    /* Input text-area */
+    .theme-input {
+      background: var(--bg-input);
+      border-color: var(--border);
+      color: var(--text);
+      transition: background 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+    }
+    .theme-input::placeholder { color: var(--text-faint); }
     input:focus, textarea:focus {
       outline: none;
       border-color: #6366f1;
@@ -128,6 +180,37 @@
     #mobile-menu { transition: max-height 0.4s ease, opacity 0.4s ease; }
     #mobile-menu.hidden { max-height: 0; opacity: 0; overflow: hidden; }
     #mobile-menu.open  { max-height: 400px; opacity: 1; }
+
+    /* Dark-mode toggle button */
+    #theme-toggle {
+      width: 2.25rem; height: 2.25rem;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s, transform 0.2s;
+      color: var(--text-muted);
+    }
+    #theme-toggle:hover { border-color: #6366f1; color: #6366f1; transform: scale(1.1); }
+    #theme-toggle svg { width: 1.1rem; height: 1.1rem; }
+    .icon-sun  { display: none; }
+    .icon-moon { display: block; }
+    .light .icon-sun  { display: block; }
+    .light .icon-moon { display: none; }
+
+    /* Light-mode overrides for Tailwind-colored elements */
+    .light .text-slate-300 { color: #334155 !important; }
+    .light .text-slate-400 { color: #475569 !important; }
+    .light .text-slate-500 { color: #64748b !important; }
+    .light .text-slate-600 { color: #94a3b8 !important; }
+    .light .text-white     { color: #0f172a !important; }
+    .light .bg-dark-card   { background-color: #ffffff !important; }
+    .light .border-dark-border { border-color: #e2e8f0 !important; }
+    .light .bg-dark        { background-color: #f1f5f9 !important; }
+    .light .placeholder-slate-600::placeholder { color: #cbd5e1 !important; }
+    .light .text-slate-200 { color: #1e293b !important; }
+    .light footer { border-color: #e2e8f0 !important; }
   </style>
 </head>
 <body>
@@ -143,29 +226,43 @@
 
       <!-- Desktop links -->
       <div class="hidden md:flex items-center gap-8">
-        <a href="#about"    class="nav-link text-slate-300 hover:text-white text-sm font-medium transition-colors">About</a>
-        <a href="#projects" class="nav-link text-slate-300 hover:text-white text-sm font-medium transition-colors">Projects</a>
-        <a href="#skills"   class="nav-link text-slate-300 hover:text-white text-sm font-medium transition-colors">Skills</a>
-        <a href="#contact"  class="nav-link text-slate-300 hover:text-white text-sm font-medium transition-colors">Contact</a>
+        <a href="#about"    class="nav-link text-sm font-medium transition-colors">About</a>
+        <a href="#projects" class="nav-link text-sm font-medium transition-colors">Projects</a>
+        <a href="#skills"   class="nav-link text-sm font-medium transition-colors">Skills</a>
+        <a href="#contact"  class="nav-link text-sm font-medium transition-colors">Contact</a>
         <a href="#contact"  class="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-dark transition-colors">Hire Me</a>
       </div>
 
-      <!-- Hamburger -->
-      <button id="menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path id="menu-icon-open"  stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          <path id="menu-icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
+      <!-- Theme toggle + Hamburger -->
+      <div class="flex items-center gap-3">
+        <button id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">
+          <!-- Moon icon (shown in dark mode) -->
+          <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+          </svg>
+          <!-- Sun icon (shown in light mode) -->
+          <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 3v1m0 16v1m8.66-9h-1M4.34 12h-1m15.07-6.07-.71.71M6.34 17.66l-.71.71m12.73 0-.71-.71M6.34 6.34l-.71-.71M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+          </svg>
+        </button>
+        <button id="menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path id="menu-icon-open"  stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            <path id="menu-icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-dark-card rounded-xl mb-2 border border-dark-border">
+    <div id="mobile-menu" class="hidden md:hidden bg-dark-card rounded-xl mb-2 border border-dark-border theme-card">
       <div class="flex flex-col p-4 gap-3">
-        <a href="#about"    class="text-slate-300 hover:text-white py-2 text-sm font-medium border-b border-dark-border mobile-link">About</a>
-        <a href="#projects" class="text-slate-300 hover:text-white py-2 text-sm font-medium border-b border-dark-border mobile-link">Projects</a>
-        <a href="#skills"   class="text-slate-300 hover:text-white py-2 text-sm font-medium border-b border-dark-border mobile-link">Skills</a>
-        <a href="#contact"  class="text-slate-300 hover:text-white py-2 text-sm font-medium mobile-link">Contact</a>
+        <a href="#about"    class="nav-link-mobile py-2 text-sm font-medium border-b border-dark-border mobile-link">About</a>
+        <a href="#projects" class="nav-link-mobile py-2 text-sm font-medium border-b border-dark-border mobile-link">Projects</a>
+        <a href="#skills"   class="nav-link-mobile py-2 text-sm font-medium border-b border-dark-border mobile-link">Skills</a>
+        <a href="#contact"  class="nav-link-mobile py-2 text-sm font-medium mobile-link">Contact</a>
       </div>
     </div>
   </div>
@@ -685,25 +782,25 @@
             <div>
               <label class="block text-xs font-medium text-slate-400 mb-1.5" for="name">Your Name</label>
               <input id="name" type="text" placeholder="John Doe"
-                     class="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 transition-all duration-200" />
+                     class="w-full theme-input rounded-lg px-4 py-2.5 text-sm transition-all duration-200" />
             </div>
             <div>
               <label class="block text-xs font-medium text-slate-400 mb-1.5" for="email">Email Address</label>
               <input id="email" type="email" placeholder="john@example.com"
-                     class="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 transition-all duration-200" />
+                     class="w-full theme-input rounded-lg px-4 py-2.5 text-sm transition-all duration-200" />
             </div>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-slate-400 mb-1.5" for="subject">Subject</label>
             <input id="subject" type="text" placeholder="Project Inquiry"
-                   class="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 transition-all duration-200" />
+                   class="w-full theme-input rounded-lg px-4 py-2.5 text-sm transition-all duration-200" />
           </div>
 
           <div>
             <label class="block text-xs font-medium text-slate-400 mb-1.5" for="message">Message</label>
             <textarea id="message" rows="5" placeholder="Tell me about your project or inquiry..."
-                      class="w-full bg-dark border border-dark-border rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 resize-none transition-all duration-200"></textarea>
+                      class="w-full theme-input rounded-lg px-4 py-2.5 text-sm resize-none transition-all duration-200"></textarea>
           </div>
 
           <button type="submit"
@@ -742,19 +839,47 @@
      JAVASCRIPT
 ================================================ -->
 <script>
+  // ---- Dark / Light mode toggle ----
+  const html = document.documentElement;
+  const themeBtn = document.getElementById('theme-toggle');
+
+  function applyTheme(mode) {
+    if (mode === 'light') {
+      html.classList.add('light');
+    } else {
+      html.classList.remove('light');
+    }
+    localStorage.setItem('theme', mode);
+    updateNavbar();
+  }
+
+  // Restore saved preference (default: dark)
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  applyTheme(savedTheme);
+
+  themeBtn.addEventListener('click', () => {
+    const current = html.classList.contains('light') ? 'light' : 'dark';
+    applyTheme(current === 'light' ? 'dark' : 'light');
+  });
+
   // ---- Navbar scroll effect ----
   const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
+
+  function updateNavbar() {
+    const isLight = html.classList.contains('light');
     if (window.scrollY > 20) {
-      navbar.style.background = 'rgba(15,23,42,0.95)';
+      navbar.style.background = isLight ? 'rgba(248,250,252,0.95)' : 'rgba(15,23,42,0.95)';
       navbar.style.backdropFilter = 'blur(16px)';
-      navbar.style.borderBottom = '1px solid #334155';
+      navbar.style.borderBottom = isLight ? '1px solid #e2e8f0' : '1px solid #334155';
     } else {
       navbar.style.background = 'transparent';
       navbar.style.backdropFilter = 'none';
       navbar.style.borderBottom = 'none';
     }
-  });
+  }
+
+  window.addEventListener('scroll', updateNavbar);
+  updateNavbar();
 
   // ---- Mobile menu toggle ----
   const menuBtn = document.getElementById('menu-btn');
